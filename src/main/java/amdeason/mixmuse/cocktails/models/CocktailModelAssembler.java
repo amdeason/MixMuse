@@ -1,6 +1,7 @@
 package amdeason.mixmuse.cocktails.models;
 
 import amdeason.mixmuse.cocktails.controllers.CocktailController;
+import amdeason.mixmuse.cocktails.controllers.RecipeController;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
@@ -16,6 +17,8 @@ public class CocktailModelAssembler  implements RepresentationModelAssembler<Coc
 
         return EntityModel.of(cocktail,
                 linkTo(methodOn(CocktailController.class).getCocktail(cocktail.getId())).withSelfRel(),
-                linkTo(methodOn(CocktailController.class).getAllCocktails()).withRel("/api/v1/cocktails"));    }
+                linkTo(methodOn(RecipeController.class).getAllRecipesInCategory(cocktail.getId())).withRel(cocktail.getName()+"_recipes"),
+                linkTo(methodOn(CocktailController.class).getAllCocktails()).withRel("cocktails"));
+    }
 
 }

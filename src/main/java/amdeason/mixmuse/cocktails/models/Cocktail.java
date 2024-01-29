@@ -1,14 +1,28 @@
 package amdeason.mixmuse.cocktails.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.bind.DefaultValue;
+import jakarta.persistence.OneToMany;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
 public class Cocktail extends AbstractEntity {
+
     private String name;
+
+    @CreationTimestamp
+    private LocalDateTime dateTimeAdded;
+
+    @OneToMany(mappedBy="cocktail")
+    @JsonIgnore
+    private final List<Recipe> recipes = new ArrayList<>();
 
     public Cocktail() {}
     public Cocktail(String aName) {
@@ -23,6 +37,13 @@ public class Cocktail extends AbstractEntity {
         this.name = name;
     }
 
+    public LocalDateTime getDateTimeAdded() {
+        return dateTimeAdded;
+    }
+
+    public List<Recipe> getRecipes() {
+        return recipes;
+    }
 
     @Override
     public String toString() {

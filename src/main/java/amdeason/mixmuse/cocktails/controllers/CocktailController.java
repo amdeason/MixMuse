@@ -3,7 +3,10 @@ package amdeason.mixmuse.cocktails.controllers;
 import amdeason.mixmuse.cocktails.exceptions.CocktailNotFoundException;
 import amdeason.mixmuse.cocktails.models.Cocktail;
 import amdeason.mixmuse.cocktails.models.CocktailModelAssembler;
+import amdeason.mixmuse.cocktails.models.Recipe;
 import amdeason.mixmuse.cocktails.repositories.CocktailRepository;
+import jakarta.persistence.ElementCollection;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +22,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class CocktailController {
 
     private final CocktailModelAssembler assembler;
+    @Autowired
     private final CocktailRepository cocktailRepository;
 
     CocktailController(CocktailModelAssembler assembler, CocktailRepository cocktailRepository) {
@@ -48,8 +52,6 @@ public class CocktailController {
     Cocktail createCocktail(@RequestBody Cocktail newCocktail) {
         return cocktailRepository.save(newCocktail);
     }
-
-
 
     @PutMapping
     Optional<Cocktail> replaceCocktail(@RequestBody Cocktail newCocktail, @PathVariable Long id) {
