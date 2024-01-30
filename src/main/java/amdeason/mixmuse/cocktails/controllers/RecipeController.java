@@ -3,9 +3,11 @@ package amdeason.mixmuse.cocktails.controllers;
 import amdeason.mixmuse.cocktails.exceptions.CocktailNotFoundException;
 import amdeason.mixmuse.cocktails.exceptions.RecipeNotFoundException;
 import amdeason.mixmuse.cocktails.models.Cocktail;
+import amdeason.mixmuse.cocktails.models.Ingredient;
 import amdeason.mixmuse.cocktails.models.Recipe;
 import amdeason.mixmuse.cocktails.models.RecipeModelAssembler;
 import amdeason.mixmuse.cocktails.repositories.CocktailRepository;
+import amdeason.mixmuse.cocktails.repositories.IngredientRepository;
 import amdeason.mixmuse.cocktails.repositories.RecipeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +17,10 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.*;
 
 import javax.swing.text.html.parser.Entity;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -27,15 +32,19 @@ public class RecipeController {
     @Autowired
     private final RecipeRepository recipeRepository;
     @Autowired
+    private final IngredientRepository ingredientRepository;
+    @Autowired
     private final CocktailRepository cocktailRepository;
 
-    RecipeController(RecipeModelAssembler assembler, RecipeRepository recipeRepository, CocktailRepository cocktailRepository){
+    RecipeController(RecipeModelAssembler assembler, RecipeRepository recipeRepository, IngredientRepository ingredientRepository,
+                     CocktailRepository cocktailRepository){
         this.assembler = assembler;
         this.recipeRepository = recipeRepository;
+        this.ingredientRepository = ingredientRepository;
         this.cocktailRepository = cocktailRepository;
     }
 
-    @GetMapping("/api/v1/cocktails/{cocktailId}/recipe/{recipeId}")
+    @GetMapping("/api/v1/cocktails/{cocktailId}/recipes/{recipeId}")
     public EntityModel<Recipe> getOneRecipe(@PathVariable Long cocktailId, @PathVariable Long recipeId) {
 
         Recipe recipe = recipeRepository.findById(recipeId) //
@@ -62,6 +71,8 @@ public class RecipeController {
         cocktail.getRecipes().add(newRecipe);
         newRecipe.setCocktail(cocktail);
         cocktailRepository.save(cocktail);
+        //TODO: figure out how to add recipe to ingredient's recipe list (without concurrent modification exception)
+
         return recipeRepository.save(newRecipe);
     }
 }
