@@ -1,5 +1,6 @@
 package amdeason.mixmuse.cocktails.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
@@ -18,6 +19,7 @@ public class Ingredient extends AbstractEntity {
     private LocalDateTime dateAdded;
 
     @ManyToMany(cascade = CascadeType.ALL)
+    @JsonIgnore
     private final List<Recipe> recipes = new ArrayList<>();
     Ingredient(){}
 

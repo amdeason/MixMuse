@@ -9,6 +9,7 @@ import amdeason.mixmuse.cocktails.models.RecipeModelAssembler;
 import amdeason.mixmuse.cocktails.repositories.CocktailRepository;
 import amdeason.mixmuse.cocktails.repositories.IngredientRepository;
 import amdeason.mixmuse.cocktails.repositories.RecipeRepository;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -72,6 +73,10 @@ public class RecipeController {
         newRecipe.setCocktail(cocktail);
         cocktailRepository.save(cocktail);
         //TODO: figure out how to add recipe to ingredient's recipe list (without concurrent modification exception)
+        for (Iterator<Ingredient> iterator = newRecipe.getIngredientList().iterator(); iterator.hasNext();) {
+            Ingredient ingredient = iterator.next();
+            ingredient.getRecipes().add(newRecipe);
+        }
 
         return recipeRepository.save(newRecipe);
     }
